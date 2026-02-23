@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+*.js
+*.d.ts
+*.js.map
+!jest.config.js
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+*.secret
+tokens.json
+
+# MF Cloud tokens (NEVER commit)
+.mf-cloud/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test coverage
+coverage/
+
+# npm
+*.tgz
