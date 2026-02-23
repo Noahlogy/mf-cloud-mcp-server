@@ -1,0 +1,38 @@
+{
+  "name": "mf-cloud-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for Money Forward Cloud APIs (Expense, Invoice)",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "mf-cloud-mcp-server": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Noahlogy/mf-cloud-mcp-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Noahlogy/mf-cloud-mcp-server/issues"
+  },
+  "homepage": "https://github.com/Noahlogy/mf-cloud-mcp-server#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
