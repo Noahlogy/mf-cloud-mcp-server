@@ -127,8 +127,9 @@ export class OAuthClient {
     });
 
     if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Token exchange failed (${res.status}): ${text}`);
+      // Consume body but don't include it in error message to prevent leaking server internals
+      await res.text();
+      throw new Error(`Token exchange failed (HTTP ${res.status})`);
     }
 
     const json = (await res.json()) as {
@@ -162,8 +163,8 @@ export class OAuthClient {
     });
 
     if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Token refresh failed (${res.status}): ${text}`);
+      await res.text();
+      throw new Error(`Token refresh failed (HTTP ${res.status})`);
     }
 
     const json = (await res.json()) as {
@@ -207,7 +208,7 @@ export class OAuthClient {
           ? "cmd"
           : "xdg-open";
     const args =
-      process.platform === "win32" ? ["/c", "start", authUrl] : [authUrl];
+      process.platform === "win32" ? ["/c", "start", "", authUrl] : [authUrl];
     execFile(cmd, args, (err) => {
       if (err) {
         console.error(
@@ -216,7 +217,7 @@ export class OAuthClient {
       }
     });
 
-    const { code, server } = await waitForCallback(port);
+    const { code, server } = await waitForCallback(port, state);
     server.close();
 
     return this.exchangeCode(code);

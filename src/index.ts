@@ -44,7 +44,7 @@ const apiClient = new MfApiClient(() => authManager.getValidToken());
 
 const server = new McpServer({
   name: "mf-cloud-mcp-server",
-  version: "0.1.0",
+  version: "1.0.0",
 });
 
 // Register all tools

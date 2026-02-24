@@ -23,6 +23,9 @@ import { OAuthClient } from "./oauth-client.js";
  * ```
  */
 export class AuthManager {
+  /** Deduplicates concurrent refresh/auth requests. */
+  private pendingRefresh: Promise<TokenData> | null = null;
+
   constructor(
     private readonly tokenStore: TokenStore,
     private readonly oauthClient: OAuthClient
@@ -60,10 +63,22 @@ export class AuthManager {
       return stored;
     }
 
+    // Deduplicate concurrent refresh attempts
+    if (this.pendingRefresh) {
+      return this.pendingRefresh;
+    }
+
+    this.pendingRefresh = this.refreshOrReauth(stored.refresh_token);
     try {
-      const refreshed = await this.oauthClient.refreshToken(
-        stored.refresh_token
-      );
+      return await this.pendingRefresh;
+    } finally {
+      this.pendingRefresh = null;
+    }
+  }
+
+  private async refreshOrReauth(refreshToken: string): Promise<TokenData> {
+    try {
+      const refreshed = await this.oauthClient.refreshToken(refreshToken);
       await this.tokenStore.save(refreshed);
       return refreshed;
     } catch {

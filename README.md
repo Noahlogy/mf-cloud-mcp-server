@@ -214,6 +214,10 @@ npm run build
 npm run dev
 ```
 
+## Disclaimer
+
+This software is provided "as is", without warranty of any kind. Use at your own risk. The authors are not responsible for any damages or losses resulting from the use of this software. See [LICENSE](LICENSE) for details.
+
 ## License
 
-ISC
+MIT

@@ -23,7 +23,7 @@ export class MfApiError extends Error {
     public readonly statusText: string,
     public readonly body: string
   ) {
-    super(`MF API error ${status}: ${statusText} — ${body}`);
+    super(`MF API error ${status}: ${statusText}`);
     this.name = "MfApiError";
   }
 }

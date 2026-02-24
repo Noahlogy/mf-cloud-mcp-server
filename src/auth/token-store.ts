@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, chmod } from "node:fs/promises";
 import { dirname } from "node:path";
 
 /**
@@ -14,6 +14,18 @@ export interface TokenData {
   refresh_token: string;
   expires_at: number;
   scope: string;
+}
+
+/** Runtime validation for deserialized token data. */
+function isValidTokenData(v: unknown): v is TokenData {
+  if (typeof v !== "object" || v === null) return false;
+  const o = v as Record<string, unknown>;
+  return (
+    typeof o.access_token === "string" &&
+    typeof o.refresh_token === "string" &&
+    typeof o.expires_at === "number" &&
+    typeof o.scope === "string"
+  );
 }
 
 /** Buffer time before actual expiry to consider a token as expired (60 seconds). */
@@ -46,7 +58,11 @@ export class TokenStore {
   async load(): Promise<TokenData | null> {
     try {
       const data = await readFile(this.filePath, "utf-8");
-      return JSON.parse(data) as TokenData;
+      const parsed: unknown = JSON.parse(data);
+      if (!isValidTokenData(parsed)) {
+        return null;
+      }
+      return parsed;
     } catch {
       return null;
     }
@@ -65,6 +81,8 @@ export class TokenStore {
     await writeFile(this.filePath, JSON.stringify(tokens, null, 2), {
       mode: 0o600,
     });
+    // Enforce permissions even if the file already existed (writeFile mode only applies to new files)
+    await chmod(this.filePath, 0o600);
   }
 
   /**
